@@ -37,6 +37,20 @@ class CustomAccountManager(BaseUserManager):
         return user
 
 
+class Location(models.Model):
+    location_id = models.CharField(max_length=100, blank=False, null=False, unique=True, primary_key=True, db_index=True)
+    location_name = models.CharField(max_length=255, blank=False, null=False, unique=True,  db_index=True)
+    county = models.CharField(max_length=255, blank=False, null=False)
+    region = models.CharField(max_length=255, blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    created_by = models.ForeignKey("NewUser", on_delete=models.SET_NULL, related_name="location_created_by", null=True, blank=True)
+    last_edited = models.DateTimeField(auto_now=True, null=True, blank=True)
+    updated_by = models.ForeignKey("NewUser", on_delete=models.SET_NULL, related_name="location_updated_by",  null=True, blank=True)
+    
+    def __str__(self):
+        return self.location_name+'  -  '  + self.county
+    
+
 class NewUser( AbstractBaseUser, PermissionsMixin ):
 
     # groups = models.ManyToManyField(Group, verbose_name=('groups'),
@@ -57,10 +71,14 @@ class NewUser( AbstractBaseUser, PermissionsMixin ):
     start_date = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(default=False) # people who can access admin
     is_active = models.BooleanField(default=True    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    phone_number = models.CharField(max_length=12, blank=False, null=False, unique=True)
+    location = models.ForeignKey(Location, db_column="location_id", related_name='newuser_location', on_delete=models.SET_NULL, null=True, blank=True)
+    phone_number = models.CharField(max_length=12, blank=False, null=False, unique=True,  db_index=True)
     phone_number_2 = models.CharField(max_length=12, blank=True, null=True,)
     otp = models.CharField(max_length=6, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    created_by = models.ForeignKey("NewUser", on_delete=models.SET_NULL, related_name="newuser_created_by", null=True, blank=True)
+    last_edited = models.DateTimeField(auto_now=True, null=True, blank=True)
+    updated_by = models.ForeignKey("NewUser", on_delete=models.SET_NULL,  related_name="newuser_updated_by", null=True, blank=True)
 
     objects = CustomAccountManager()
 
@@ -85,19 +103,11 @@ class NewUser( AbstractBaseUser, PermissionsMixin ):
         super().save(*args, **kwargs)
 
 
-class Location(models.Model):
-    location_id = models.CharField(max_length=100, blank=False, null=False, unique=True, primary_key=True)
-    location_name = models.CharField(max_length=255, blank=False, null=False, unique=True)
-    county = models.CharField(max_length=255, blank=False, null=False)
-    region = models.CharField(max_length=255, blank=False, null=False)
 
-  
-    def __str__(self):
-        return self.location_name
+
     
 
 class Farmer(NewUser):
-    location = models.ForeignKey(Location, db_column="location_id", on_delete=models.SET_NULL, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null = True, blank=True )
     is_broker = models.BooleanField(default=False)
@@ -106,8 +116,7 @@ class Farmer(NewUser):
         return self.full_names
     
 class Vendor(NewUser):
-    location = models.ForeignKey(Location, db_column="location_id", on_delete=models.SET_NULL, null=True, blank=True)
-    business_name = models.CharField(max_length=100, null=True, blank=True)
+    business_name = models.CharField(max_length=100,  null=True, blank=True,  db_index=True)
     kra_pin = models.CharField(max_length=100, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null = True, blank=True )
@@ -117,7 +126,6 @@ class Vendor(NewUser):
     
 
 class Employee(NewUser):
-    location = models.ForeignKey(Location, db_column="location_id", on_delete=models.SET_NULL, null=True, blank=True)
     position =   models.CharField(max_length=100, null=True, blank=True)
     experience_years = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
     hire_date =  models.DateField (null=True, blank=True)
@@ -134,10 +142,9 @@ class Transporter(NewUser):
     owner_phone_number =  models.CharField(max_length=12, blank=True, null=True, unique=True)
     capacity_kg = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
     vehicle_brand =   models.CharField(max_length=100, blank=True, null=True)
-    location = models.ForeignKey(Location, db_column="location_id", on_delete=models.SET_NULL, null=True, blank=True)
     is_broker = models.BooleanField(default=False, blank=True, null=True, )
     
     def __str__(self):
-        return self.full_names
+        return self.full_names+'  -  '  + self.capacity_kg +'  -  '  +  self.phone_number
     
 

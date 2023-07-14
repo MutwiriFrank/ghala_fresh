@@ -28,7 +28,8 @@ INSTALLED_APPS = [
      'drf_yasg',
 
      # my apps
-     'users'
+     'users',
+     'cms'
 ]
 
 
