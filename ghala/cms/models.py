@@ -13,10 +13,9 @@ PRODUCE_STORAGE_PERIOD = (
 )
 
 class Unit (models.Model):
-    unit_id = models.CharField(max_length=10, primary_key=True, blank=False, null=False )
+    unit_id = models.UUIDField(primary_key=True,  default=uuid.uuid4, editable=False)
     unit_name = models.CharField(max_length=100, unique=True,  blank=False, null=False, db_index=True)
-    unit_description = models.ForeignKey(Location, db_column="location_id", on_delete=models.SET_NULL,
-                                          null=True, blank=True)
+    unit_description = models.TextField( null=True, blank=True )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL,
                                     related_name = 'unit_created_by', null=True, blank=True)
@@ -79,9 +78,9 @@ class Purchase_produce(models.Model):
         ordering = ['created_at']
 
 
-class Shipment_from_farm(models.Model):
-    shipment_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    transporter = models.ForeignKey(Transporter, related_name= 'shipment_from_farm_transporter', 
+class Shipping_from_farm(models.Model):
+    shipment_id = models.UUIDField(primary_key=True,  default=uuid.uuid4, editable=False)
+    transporter = models.ForeignKey(Transporter, related_name= 'shipping_from_farm_transporter', 
                                     on_delete=models.SET_NULL , null=True, blank=True)
     driver_phone = models.CharField(max_length=13, null=False, blank=False)
     loading_timestamp = models.DateTimeField(null=True, blank=True)
@@ -89,10 +88,10 @@ class Shipment_from_farm(models.Model):
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
-                                   related_name = 'shipment_from_farm_created_by', null=True, blank=True)
+                                   related_name = 'shipping_from_farm_created_by', null=True, blank=True)
     last_edited = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
-                                   related_name='shipment_from_farm_updated_by', null=True, blank=True)
+                                   related_name='shipping_from_farm_updated_by', null=True, blank=True)
 
     class Meta:
         indexes = (
@@ -100,6 +99,7 @@ class Shipment_from_farm(models.Model):
         )
     def __str__(self) :
         return self.driver_phone+'  -  '  + self.departure_timestamp
+
 
 class Repackaged_produce(models.Model):
     repackaged_produce_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, 
@@ -109,8 +109,8 @@ class Repackaged_produce(models.Model):
     unit = models.ForeignKey(Unit, db_column='unit_id', on_delete=models.RESTRICT, 
                              related_name = 'repackaged_produce_unit', null=False, blank=False)
     unit_quantity = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
-    shipment_from_farm = models.ForeignKey(Shipment_from_farm, db_column='shipment_id', on_delete=models.RESTRICT,
-                related_name = 'repackaged_produce_shipment_from_farm', null=False, blank=False)
+    shipping_from_farm = models.ForeignKey(Shipping_from_farm, db_column='shipment_id', on_delete=models.RESTRICT,
+                related_name = 'repackaged_produce_shipping_from_farm', null=False, blank=False)
     total_product_cost = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
     date_repacked = models.DateField(null=False, blank=False, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -193,6 +193,9 @@ class Received_products(models.Model):
     updated_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
                                    related_name='received_products_updated_by', null=True, blank=True)
 
+    def __str__(self) :
+        return self.warehouse+'  -  '+self.produce+'  -  '+self.unit+'  -  '+self.unit_quantity
+    
 
 class Stock(models.Model):
     stock_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
@@ -212,6 +215,32 @@ class Stock(models.Model):
     updated_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
                                    related_name='stock_updated_by', null=True, blank=True)
 
+    def __str__(self) :
+        return self.warehouse+'  -  '+self.produce+'  -  '+self.unit+'  -  '+self.unit_quantity
+    
+
+class Opening_closing_stock(models.Model):
+    opening_closing_stock_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
+    date = models.DateField(blank=False, null=False )
+    warehouse = models.ForeignKey(Warehouse, db_column='warehouse_id', on_delete=models.SET_NULL, 
+                                  related_name = 'opening_closing_stock_warehouse', null=True, blank=True)
+    produce = models.ForeignKey(Produce, db_column='produce_id', on_delete=models.SET_NULL, 
+                                related_name = 'opening_closing_stock_produuce', null=True, blank=True)
+    unit = models.ForeignKey(Unit, db_column='unit_id', on_delete=models.SET_NULL, 
+                             related_name = 'opening_closing_stock_unit', null=True, blank=True)
+    opening_quantity = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
+    closing_quantity = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
+    amount_sold =  models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
+                                   related_name = 'opening_closing_stock_created_by', null=True, blank=True)
+    last_edited = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
+                                   related_name='opening_closing_stock_updated_by', null=True, blank=True)
+
+    def __str__(self) :
+        return self.warehouse+'  -  '+self.produce+'  -  '+self.unit+'  open-  '+self.opening_quantity+'  close-  '+self.closing_quantity
+
 
 class Order(models.Model):
     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)
@@ -226,6 +255,9 @@ class Order(models.Model):
     last_edited = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
                                    related_name='order_updated_by', null=True, blank=True)
+    
+    def __str__(self) :
+        return self.order_id+'  -  '+self.vendor+'  -  '+self.total_price
     
 
 class Order_item(models.Model):
@@ -244,6 +276,9 @@ class Order_item(models.Model):
     updated_by = models.ForeignKey(NewUser, on_delete=models.SET_NULL, 
                                    related_name='order_item_updated_by', null=True, blank=True)
 
+    def __str__(self) :
+        return self.order+'  -  '+self.produce+'  -  '+self.unit+'  -  '+self.quantity
+    
 
 class Gateway(models.Model):
     gateway_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, 
@@ -280,6 +315,9 @@ class Order_payment(models.Model):
 
     # post save update order to is fully paid
     # post save load to sales tables
+
+    def __str__(self) :
+        return self.order+'  -  '+self.gateway+'  -  '+self.amount_paid
 
 
 class Sales(models.Model):

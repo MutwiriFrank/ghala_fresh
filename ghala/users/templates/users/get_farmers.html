@@ -1,0 +1,46 @@
+{% extends 'users/main.html' %}
+
+
+{% block content %}
+
+
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Farmer</th>
+        <th>Phone Number</th>
+       
+        <th>Alternative Phone Number</th>
+        <th>Location</th>
+        <th>Last Purchase</th>
+        <th>Date Orderd</th>
+        
+
+    </tr>
+    {% for farmer in farmers %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td><a href="">{{farmer.full_names}}</a></td>
+            <td>
+                {{ farmer.phone_number}}
+            </td>
+            <td>
+                {{ farmer.phone_number_2 }}
+            </td>
+            <td>
+                {{ farmer.location }}
+            </td>
+            <td>
+                <p>purchase 12 </p>
+            </td>
+            <td>
+                <p>2023-06-19</p>
+            </td>
+
+
+        </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends 'users/main.html' %}
+
+{% block content %}
+<div class="container col-xl-12">
+
+    <div class="card mb-4">
+        <div class="card-header">Account Details</div>
+        <div class="card-body">
+            <form class="farmer_details_form" name="farmer_details_form" action="{% url 'cms:purchase_produce' 1 %}" method="post"  >
+                {% csrf_token %}
+       
+                <div class="mb-3">
+                    <select class="form-select" name = 'produce'   class="form-control" required>
+                        <option  selected>Select Produce</option>
+                        {% for produce in produces %}
+                            <p> produce</p>
+                            <option value={{produce.produce_id}}>{{produce.produce_name}}</option>
+                        {% endfor %}               
+                    </select>
+                </div>
+               
+                <div class="row gx-3 mb-3">
+                
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="quantity">Unit</label>
+                        <select class="form-select" name = 'unit'  class="form-control" required>
+                            <option  selected>Select Unit</option>
+                            {% for unit in units %}
+                                <p> unit</p>
+                                <option value={{unit.unit_id}}>{{unit.unit_name}}</option>
+                            {% endfor %}               
+                        </select>
+                    </div>
+               
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="quantity">Quantity</label>
+                        <input class="form-control" name="quantity" type="number" placeholder="Quantity" >
+                    </div>
+                </div>
+
+                <div class="row gx-3 mb-3">               
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="total_weight">Total Weight in Kg</label>
+                        <input class="form-control" name="total_weight" type="number" placeholder="total_weight" >
+                    </div>
+               
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="total_price">Total Price</label>
+                        <input class="form-control" name="total_price" type="number" placeholder="total_price" >
+                    </div>
+                </div>
+                               
+                <button class="btn btn-primary"  type="submit" >Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

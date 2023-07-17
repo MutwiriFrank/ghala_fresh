@@ -1,0 +1,64 @@
+{% extends 'users/main.html' %}
+
+
+{% block content %}
+<div class="container">
+<form class="create-farmer-form" name="create_farmer_form" action="{% url 'users:create_farmer' %}" method="post" > 
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <label for="full_names" class="form-label">Name</label>
+        <input type="text" class="form-control" id="full_names" name="full_names" required  >
+     
+    </div>
+    
+    <div class="mb-3">
+        <label for="phone_number" class="form-label">Phone Number</label>
+        <input type="tel" class="form-control" id="phone_number" name="phone_number" aria-describedby="phone_numberHelp" pattern="[1-9]{1}[0-9]{9}"required>
+        <div id="phone_numberHelp" class="form-text">Your number can only be 0 to 9</div>
+    </div>
+
+    <div class="mb-3">
+            <label for="phone_number_2" class="form-label">Alternative Phone Number</label>
+            <input type="text" class="form-control" id="phone_number_2" name="phone_number_2"  aria-describedby="phone_number_2Help" pattern="[1-9]{1}[0-9]{9}">
+            <div id="phone_number2Help" class="form-text">Your number can only be 0 to 9<.</div>
+    </div>
+
+    <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+      </div>
+
+      <div class="mb-3">
+            <select class="form-select" name = 'location'  aria-label="Default select example" class="form-control" required>
+                <option  selected>Select Locations</option>
+                {% for location in locations %}
+                    <p> location</p>
+                    <option value={{location.location_id}}>{{location.location_name}}</option>
+                {% endfor %}               
+            </select>
+      </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" name="password"  aria-describedby="passwordHelp" >
+        <div id="passwordHelp" class="form-text">Password should be atleast 8 characters</div>
+    </div>
+
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="is_broker" name="is_broker">
+        <label class="form-check-label" for="exampleCheck1">Is Broker</label>
+    </div>
+
+    <div> 			  
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+{% endblock content %}
+

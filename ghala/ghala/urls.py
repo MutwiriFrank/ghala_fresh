@@ -22,17 +22,18 @@ schema_view = get_schema_view(openapi.Info(
 
 urlpatterns = [
 
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     
     # users
-    path('users/', include('users.urls', namespace='users' )),
+    path('account/', include('users.urls', namespace='users' )),
+    path('', include('cms.urls', namespace='cms' )),
 
     # django rest web login
     path('api_auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # documentation
-    path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

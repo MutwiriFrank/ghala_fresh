@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import RegisterFarmerView, RegisterVendorView, login_page,  logout_page
+from .views import (RegisterFarmerView, RegisterVendorView, login_page,  logout_page, create_farmer
+                    , get_farmers, update_farmer )
 
 app_name = 'users'
 
@@ -12,6 +13,11 @@ urlpatterns = [
 
   
     path('login', login_page, name="login"),
-    path('logout', logout_page, name="logout")
+    path('logout', logout_page, name="logout"),
+    path('create-farmer', create_farmer, name="create_farmer"),
+    path('list-farmers', get_farmers, name="get_farmers"),
+    path('farmer-details/<str:id>/', update_farmer, name="update_farmer")
+
+    # path('farmer-details', update_farmer, name="update_farmer")
 
 ]

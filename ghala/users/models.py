@@ -4,8 +4,14 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 
+import datetime
 import random
 import uuid
+
+POSITIONS = (
+    ('sales_person', 'sales person'),
+    ('produce_buyer', 'produce buyer')
+)
 
 class CustomAccountManager(BaseUserManager):
 
@@ -66,7 +72,7 @@ class NewUser( AbstractBaseUser, PermissionsMixin ):
     #     related_query_name='new_user'
     # )
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    email = models.EmailField(max_length=254, unique=True, null=False, blank=False)
+    email = models.EmailField(max_length=254, null=True, blank=True)
     full_names = models.CharField(max_length=100 )
     start_date = models.DateTimeField(default=timezone.now)
     is_staff = models.BooleanField(default=False) # people who can access admin
@@ -86,7 +92,7 @@ class NewUser( AbstractBaseUser, PermissionsMixin ):
     REQUIRED_FIELDS = ['full_names']
 
     def __str__(self):
-        return self.full_names
+        return self.full_names 
 
     def save(self, *args, **kwargs):
         number_list = [x for x in range(10)]  # Use of list comprehension
@@ -101,10 +107,6 @@ class NewUser( AbstractBaseUser, PermissionsMixin ):
         # A six digit random number from the list will be saved in top field
         self.otp = code_string
         super().save(*args, **kwargs)
-
-
-
-
     
 
 class Farmer(NewUser):
@@ -113,8 +115,9 @@ class Farmer(NewUser):
     is_broker = models.BooleanField(default=False)
     
     def __str__(self):
-        return self.full_names
+        return self.full_names +'  -  '+ str(self.user_id)
     
+
 class Vendor(NewUser):
     business_name = models.CharField(max_length=100,  null=True, blank=True,  db_index=True)
     kra_pin = models.CharField(max_length=100, null=True, blank=True)
@@ -122,20 +125,29 @@ class Vendor(NewUser):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null = True, blank=True )
 
     def __str__(self):
-        return self.full_names
+        return self.full_names 
     
 
 class Employee(NewUser):
-    position =   models.CharField(max_length=100, null=True, blank=True)
+    position =   models.CharField(choices = POSITIONS, null=True, blank=True)
     experience_years = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
     hire_date =  models.DateField (null=True, blank=True)
-    is_rehired =  models.BooleanField(default=False)
+    is_rehired =  models.BooleanField(default=False, null=True, blank=True)
     salary = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
     commission = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
     
     def __str__(self):
-        return self.full_names
+        return self.full_names 
     
+    class Meta:
+        permissions = (
+            ('can_add_farmers', 'Can add farmers'),
+            ('can_add_vendors', 'Can add Vendors'),
+            ('can_list_farmers', 'Can list farmers'),
+            ('can_list_vendors', 'Can list vendors'),
+            ('can_list_orders', 'Can list orders'),
+        )
+
 
 class Transporter(NewUser):
     registration_number= models.CharField(max_length=100, blank=True, null=True)
@@ -148,3 +160,16 @@ class Transporter(NewUser):
         return self.full_names+'  -  '  + self.capacity_kg +'  -  '  +  self.phone_number
     
 
+class Produce_buyer_to_farmer(models.Model):
+    default_end_date = datetime.date(2099, 12, 31)
+
+    farmer = models.ForeignKey(Farmer, related_name='Produce_buyer_to_farmer', 
+        on_delete=models.SET_NULL, null=True, blank=True)
+    produce_buyer = models.ForeignKey(Employee, related_name='Produce_buyer_to_farmer', 
+        on_delete=models.SET_NULL, null=True, blank=True)
+    start_date = models.DateField(auto_now_add=True, blank=True, null=True)
+    end_date = models.DateField(default= default_end_date,  blank=True, null=True)
+
+    def __str__(self):
+        return str(self.produce_buyer.full_names)+'  -  '  + str(self.farmer.full_names) 
+    
