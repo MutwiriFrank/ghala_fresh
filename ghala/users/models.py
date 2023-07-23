@@ -130,11 +130,11 @@ class Vendor(NewUser):
 
 class Employee(NewUser):
     position =   models.CharField(choices = POSITIONS, null=True, blank=True)
-    experience_years = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
+    experience_years = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     hire_date =  models.DateField (null=True, blank=True)
     is_rehired =  models.BooleanField(default=False, null=True, blank=True)
-    salary = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
-    commission = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
+    salary = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
+    commission = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     
     def __str__(self):
         return self.full_names 
@@ -152,12 +152,12 @@ class Employee(NewUser):
 class Transporter(NewUser):
     registration_number= models.CharField(max_length=100, blank=True, null=True)
     owner_phone_number =  models.CharField(max_length=12, blank=True, null=True, unique=True)
-    capacity_kg = models.DecimalField(max_digits=9, decimal_places=3, null=True, blank=True)
+    capacity_kg = models.DecimalField(max_digits=9, decimal_places=2, null=True, blank=True)
     vehicle_brand =   models.CharField(max_length=100, blank=True, null=True)
     is_broker = models.BooleanField(default=False, blank=True, null=True, )
     
     def __str__(self):
-        return self.full_names+'  -  '  + self.capacity_kg +'  -  '  +  self.phone_number
+        return str(self.full_names)+'  -  '  + str(self.capacity_kg) +'  -  '  +  str(self.phone_number)
     
 
 class Produce_buyer_to_farmer(models.Model):

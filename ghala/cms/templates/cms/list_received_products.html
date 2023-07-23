@@ -1,0 +1,90 @@
+{% extends 'users/main.html' %}
+
+
+{% block content %}
+
+
+<table class="table">
+    <tr>
+        <th></th>
+
+        <th>produce</th>
+        <th>Unit</th>
+        <th>Unit Quantity</th>  
+        <th>Transporter</th>  
+        <th>Warehouse </th> 
+        <th>Received by</th> 
+        <th>Date</th>
+        <th>Update </th>
+        <th>Delete</th>
+        
+
+    </tr>
+    {% for product in produces %}
+        <tr>
+            <td>{{forloop.counter}}</td>  
+
+            <td>
+                {{ product.produce.produce_name }}
+            </td>
+            <td>
+                {{ product.unit.unit_name }}
+            </td>
+            <td>
+                {{ product.quantity }}
+            </td>
+            <td>
+                {{ product.transporter.full_names}}
+            </td>
+            <td>
+                {{ product.warehouse.warehouse_name}}
+            </td>
+            <td>
+                {{ product.received_by.full_names}}
+            </td>
+            <td>
+                {{ product.date_received }}
+            </td>
+            <td>
+                <a class="link-primary" href="{% url 'cms:update_received_products' product.received_product_id %}"> <i class="bi bi-pencil-square"></i></a>
+
+            </td>
+            <td>
+                <button id="myInput"  type="button" data-bs-toggle="modal" data-bs-target="#myModal" >
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+
+            <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                            <form action = "{% url 'cms:delete_received_products' product.received_product_id %}" method="post" >
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    Are you sure you want to delete these received products?
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a href= >
+                                <button type="submit" class="btn btn-primary">Understood</button>
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </tr>
+    {% endfor %}
+
+</table>
+
+<!-- Modal -->
+
+
+{% endblock content %}

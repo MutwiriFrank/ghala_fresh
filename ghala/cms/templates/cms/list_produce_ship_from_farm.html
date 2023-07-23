@@ -1,0 +1,98 @@
+{% extends 'users/main.html' %}
+
+
+{% block content %}
+
+
+<table class="table">
+    <tr>
+        <th></th>
+
+        <th>produce</th>
+        <th>Unit</th>
+        <th>Unit Quantity</th>  
+        <th>Transporter</th>  
+        <th>Driver Phone</th> 
+        <th>Incharge</th> 
+        <th>Produce Cost</th>  
+        <th>Shipping Cost</th>  
+        <th>Date</th>
+        <th>Update </th>
+        <th>Delete</th>
+        
+
+    </tr>
+    {% for purchase in purchased_produces %}
+        <tr>
+            <td>{{forloop.counter}}</td>  
+
+            <td>
+                {{ purchase.produce.produce_name }}
+            </td>
+            <td>
+                {{ purchase.unit.unit_name }}
+            </td>
+            <td>
+                {{ purchase.quantity }}
+            </td>
+            <td>
+                {{ purchase.transporter.full_names}}
+            </td>
+            <td>
+                {{ purchase.driver_phone}}
+            </td>
+            <td>
+                {{ purchase.buyer.full_names}}
+            </td>
+            <td>
+                {{ purchase.total_produce_cost}}
+            </td>
+            <td>
+                {{ purchase.shipping_cost }}
+            </td>
+            <td>
+                {{ purchase.shipping_date }}
+            </td>
+            <td>
+                <a class="link-primary" href="{% url 'cms:update_produce_ship_from_farm' purchase.shipment_id %}"> <i class="bi bi-pencil-square"></i></a>
+
+            </td>
+            <td>
+                <button id="myInput"  type="button" data-bs-toggle="modal" data-bs-target="#myModal" >
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+
+            <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                            
+                                <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                            <form action = "{% url 'cms:delete_produce_ship_from_farm' purchase.shipment_id %}" method="post" >
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                Are you sure you want to delete this shipment?
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a href= >
+                                <button type="submit" class="btn btn-primary">Understood</button>
+                                </a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </tr>
+    {% endfor %}
+
+</table>
+
+<!-- Modal -->
+
+
+{% endblock content %}

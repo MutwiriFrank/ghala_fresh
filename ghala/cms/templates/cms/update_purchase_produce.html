@@ -1,0 +1,82 @@
+{% extends 'users/main.html' %}
+
+{% block content %}
+<div class="container col-xl-12">
+
+    <div class="card mb-4">
+        <div class="card-header">Update Purchase produce</div>
+        <div class="card-body">
+
+            <form class="purchase_produce_form" name="purchase_produce_form" action="{% url 'cms:update_purchase_produce' purchased_produce.purchase_produce_id %}" method="post"  >
+                {% csrf_token %}
+       
+                <div class="mb-3">
+                    <label class="small mb-1" for="quantity">Produce</label>
+                    <select class="form-select" name = 'produce'   class="form-control" required>
+                        <option value={{purchased_produce.produce.produce_id}}  selected>{{purchased_produce.produce.produce_name}}</option>
+                        {% for produce in all_produce %}
+                            <p> produce</p>
+                            <option value={{produce.produce_id}}>{{produce.produce_name}}</option>
+                        {% endfor %}               
+                    </select>
+                </div>
+               
+                <div class="row gx-3 mb-3">
+                
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="quantity">Unit</label>
+                        <select class="form-select" name = 'unit'  class="form-control" required>
+                            <option value ={{ purchased_produce.unit.unit_id}}  selected>{{purchased_produce.unit.unit_name}}</option>
+                            {% for unit in units %}
+                                <p> unit</p>
+                                <option value={{unit.unit_id}}>{{unit.unit_name}}</option                                                      >
+                            {% endfor %}               
+                        </select>
+                    </div>
+               
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="quantity">Quantity</label>
+                        <input class="form-control" name="quantity" type="number" placeholder="Quantity" value={{purchased_produce.quantity}} >
+                    </div>
+                </div>
+
+                <div class="row gx-3 mb-3">               
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="total_weight">Total Weight in Kg</label>
+                        <input class="form-control" name="total_weight" type="number" placeholder="total_weight" value={{purchased_produce.total_weight}}  >
+                    </div>
+               
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="total_price">Total Price</label>
+                        <input class="form-control" name="total_price" type="number" placeholder="total_price" value={{purchased_produce.total_price}} >
+                    </div>
+{% comment %}                     
+                    <div class="col-md-6">
+                        <label for="date" class="col-1 col-form-label">Date</label>
+                      
+                            <div class="input-group date" id="datepicker">
+                                <input type="text" name="date_bought" class="form-control" id="date"/>
+                                <span class="input-group-append">
+                                <span class="input-group-text bg-light d-block">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                                </span>
+                            </div>
+                        
+                    </div> {% endcomment %}
+
+                </div>
+                               
+                <button class="btn btn-primary"  type="submit" >Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<Script type='javascript' >
+    $(function(){
+    $('#datepicker').datepicker();
+    });
+</Script>
+
+{% endblock %}

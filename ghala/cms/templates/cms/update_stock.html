@@ -1,0 +1,66 @@
+{% extends 'users/main.html' %}
+
+{% block content %}
+<div class="container col-xl-12">
+
+    <div class="card mb-4">
+        <div class="card-header">Update produce received in the warehouse  </strong></div>
+        <div class="card-body">
+
+            <form class="purchase_produce_form" name="purchase_produce_form" action="{% url 'cms:update_stock' stock.stock_id %}" method="post"  >
+                {% csrf_token %}
+                <div class="mb-3">
+                        
+                        <label class="small mb-1" for="quantity">Warehouse</label>
+                        <select class="form-select" name = 'warehouse'  class="form-control" required>
+                            <option    value= {{stock.warehouse.warehouse_id}}  selected>{{stock.warehouse.warehouse_name}}</option>
+                            {% for warehouse in warehouses %}
+                                <p> warehouse</p>
+                                <option value={{warehouse.warehouse_id}}>{{warehouse.warehouse_name}}</option>
+                            {% endfor %}               
+                        </select>
+                </div>  
+
+                <div class="mb-3">
+                    <label class="small mb-1" for="quantity">Produce</label>
+                    <select class="form-select" name = 'produce'    class="form-control" required>
+                        <option value= {{stock.produce.produce_id}}  selected>{{stock.produce.produce_name}}</option>
+                        {% for produce in produces %}
+                            <p> produce</p>
+                            <option value={{produce.produce_id}}>{{produce.produce_name}}</option>
+                        {% endfor %}               
+                    </select>
+                </div>
+               
+                <div class="row gx-3 mb-3">
+                
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="quantity">Unit</label>
+                        <select class="form-select" name = 'unit'  class="form-control" required>
+                            <option  value= {{stock.unit.unit_id}}  selected>{{stock.unit.unit_name}}</option>
+                            {% for unit in units %}
+                                <p> unit</p>
+                                <option value={{unit.unit_id}}>{{unit.unit_name}}</option>
+                            {% endfor %}               
+                        </select>
+                    </div>
+               
+                    <div class="col-md-6">
+                        <label class="small mb-1" for="quantity">Quantity</label>
+                        <input class="form-control" name="quantity" type="number" placeholder="Quantity" value={{stock.quantity}}  >
+                    </div>
+                </div>
+                                 
+                <button class="btn btn-primary"  type="submit" >Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<Script type='javascript' >
+    $(function(){
+    $('#datepicker').datepicker();
+    });
+</Script>
+
+{% endblock %}

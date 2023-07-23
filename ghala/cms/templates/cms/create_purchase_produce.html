@@ -4,12 +4,14 @@
 <div class="container col-xl-12">
 
     <div class="card mb-4">
-        <div class="card-header">Account Details</div>
+        <div class="card-header">Purchase produce from <strong>{{ farmer.full_names}}</strong></div>
         <div class="card-body">
-            <form class="farmer_details_form" name="farmer_details_form" action="{% url 'cms:purchase_produce' 1 %}" method="post"  >
+
+            <form class="purchase_produce_form" name="purchase_produce_form" action="{% url 'cms:create_purchase_produce' farmer.user_id %}" method="post"  >
                 {% csrf_token %}
        
                 <div class="mb-3">
+                    <label class="small mb-1" for="quantity">Produce</label>
                     <select class="form-select" name = 'produce'   class="form-control" required>
                         <option  selected>Select Produce</option>
                         {% for produce in produces %}
@@ -48,12 +50,33 @@
                         <label class="small mb-1" for="total_price">Total Price</label>
                         <input class="form-control" name="total_price" type="number" placeholder="total_price" >
                     </div>
+                    {% comment %}                     
+                    <div class="col-md-6">
+                        <label for="date" class="col-1 col-form-label">Date</label>
+                      
+                            <div class="input-group date" id="datepicker">
+                                <input type="text" name="date_bought" class="form-control" id="date"/>
+                                <span class="input-group-append">
+                                <span class="input-group-text bg-light d-block">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                                </span>
+                            </div>
+                        
+                    </div> {% endcomment %}
+
                 </div>
                                
-                <button class="btn btn-primary"  type="submit" >Save changes</button>
+                <button class="btn btn-primary"  type="submit" >Create</button>
             </form>
         </div>
     </div>
 </div>
+
+<Script type='javascript' >
+    $(function(){
+    $('#datepicker').datepicker();
+    });
+</Script>
 
 {% endblock %}

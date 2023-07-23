@@ -20,7 +20,7 @@
     {% for farmer in farmers %}
         <tr>
             <td>{{forloop.counter}}</td>
-            <td><a href="">{{farmer.full_names}}</a></td>
+            <td><a  class="link-primary"  href="{% url 'users:update_farmer' farmer.user_id %}">{{farmer.full_names}}</a></td>
             <td>
                 {{ farmer.phone_number}}
             </td>

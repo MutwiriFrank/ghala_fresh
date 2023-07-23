@@ -26,7 +26,7 @@ urlpatterns = [
     
     # users
     path('account/', include('users.urls', namespace='users' )),
-    path('', include('cms.urls', namespace='cms' )),
+    path('cms/', include('cms.urls', namespace='cms' )),
 
     # django rest web login
     path('api_auth/', include('rest_framework.urls', namespace='rest_framework')),

@@ -56,10 +56,10 @@ def login_page(request):
                     login(request, user)
                 return redirect('users:get_farmers')
 
-            # else:
+            else:
         
-            #     messages.error(request, "username and password do not match, \n Try again")
-            #     return redirect('users:login')
+                messages.error(request, "username and password do not match, \n Try again")
+                return redirect('users:login')
         else:
             return render(request, 'users/login.html',)
         
@@ -227,6 +227,7 @@ def get_farmers(request):
 
    
 @login_required(login_url='users:login')
+@transaction.atomic
 def update_farmer(request, id):
     farmer = Farmer.objects.filter(user_id=id).first()
     locations = Location.objects.all()
@@ -245,9 +246,7 @@ def update_farmer(request, id):
 
     context = {"farmer":farmer, "locations" : locations}
     
-
-
-
+    return render(request, 'users/farmer_details.html', context)
     
 
 

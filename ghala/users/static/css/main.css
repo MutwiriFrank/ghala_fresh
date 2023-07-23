@@ -4,7 +4,10 @@
 	padding: 0;
 
 }
-
+.input-group-append {
+    cursor: pointer;
+  }
+  
 body{
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, Sans-serif;
 	color: #000;
@@ -215,3 +218,5 @@ input:focus {
 .new_to_signup_p{
 	margin-top: 2rem;
 }
+
+
